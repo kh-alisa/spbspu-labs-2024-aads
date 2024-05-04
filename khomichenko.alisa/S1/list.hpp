@@ -1,10 +1,15 @@
 #include <iostream>
 
+
 template< typename T >
 struct List {
 public:
 
-  List()=default;
+  List():
+    size(0),
+    head(nullptr),
+    ending(nullptr)
+  {};
   List(const List & other)=default;
   ~List()=default;
 
@@ -13,11 +18,16 @@ public:
   void pushFront(T data);
   bool empty();
   void print();
+  void popFront();
+  void clear();
+  void swap(List * other);
 private:
   size_t size;
   Node * head;
   Node * ending;
 };
+
+
 
 template <typename T>
 struct List<T>::Node {
@@ -68,12 +78,50 @@ template <typename T>
 void List<T>::print()
 {
   Node * go = head;
-  while (go != ending)
+  while (go != nullptr)
   {
     std::cout<< go->data<<" ";
     go = go->next;
   }
-  std::cout<< ending->data<<"\n";
+  std::cout<<"\n";
 }
 
+template <typename T>
+void List<T>::popFront()
+{
+  if (head == ending)
+  {
+    delete head;
+    head = nullptr;
+    ending = nullptr;
+  }
+  else
+  {
+  Node * todel = head;
+  head = head->next;
+  delete todel;
+  }
+}
 
+template <typename T>
+void List<T>::clear()
+{
+  while (head != nullptr)
+  {
+    popFront();
+  }
+}
+
+template <typename T>
+void List<T>::swap(List * other)
+{
+  if (size ==  other->size)
+  {
+    std::swap(head, other->head);
+    std::swap(ending, other->ending);
+  }
+  else
+  {
+    std::cerr<<"error: different size\n";
+  }
+}
