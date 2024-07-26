@@ -21,6 +21,15 @@ public:
   void popFront();
   void clear();
   void swap(List * other);
+
+  class Iterator;
+  class ConstIterator;
+
+  Iterator begin() const;
+  Iterator end() const;
+  ConstIterator cbegin() const;
+  ConstIterator cend();
+
 private:
   size_t size;
   Node * head;
@@ -124,4 +133,82 @@ void List<T>::swap(List * other)
   {
     std::cerr<<"error: different size\n";
   }
+}
+
+template <typename T>
+class List<T>::ConstIterator : public std::iterator<std::forward_iterator_tag, T>
+{
+public:
+  friend class List<T>;
+
+  ConstIterator();
+  ConstIterator(Node * ptr);
+  ConstIterator(const ConstIterator&) = default;
+  ~ConstIterator() = default;
+
+  ConstIterator& operator=(const ConstIterator&) = default;
+  ConstIterator& operator++();
+  ConstIterator operator++(int);
+
+  const T& operator*() const;
+  const T* operator->() const;
+
+  bool operator!=(const ConstIterator& list) const;
+  bool operator==(const ConstIterator& list) const;
+
+private:
+  Node * node;
+};
+
+template <typename T>
+List<T>::ConstIterator::ConstIterator():
+  Node(nullptr)
+{}
+
+template <typename T>
+List<T>::ConstIterator(Node * ptr):
+  Node(ptr)
+{}
+
+template <typename T>
+typename List<T>::ConstIterator& List<T>::ConstIterator::operator++()
+{
+  assert(node != nullptr);
+  node = node->next;
+  return * this;
+}
+
+template <typename T>
+typename List<T>::ConstIterator& List<T>::ConstIterator::operator++(int)
+{
+  assert(node != nullptr)
+  ConstIterator result (*this);
+  ++(*this);
+  return result;
+}
+
+template <typename T>
+T& List<T>::ConstIterator::operator*()
+{
+  assert (iterator != nullptr);
+  return iterator.node->data;
+}
+
+template <typename T>
+T* List<T>::ConstIterator::operator->()
+{
+  assert(iterator != nullptr);
+  return std::addressof(iterator.node->data);
+}
+
+template <typename T>
+bool List<T>::ConstIterator::operator==(const Iterator& list) const
+{
+  return iterator == list.iterator;
+}
+
+template <typename T>
+bool List<T>::ConstIterator::operator!=(const Iterator& list) const
+{
+  return !(iterator == list.iterator);
 }
